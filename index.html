@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAYA // Autonomous Counter-Deception & Phishing Neutralization Engine</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Space+Grotesk:wght@700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-paper: #F4F0EA;
+      --ink: #0B0F19;
+      --neo-yellow: #FFE600;
+      --neo-lime: #A3E635;
+      --neo-cyan: #22D3EE;
+      --neo-pink: #FF5C8D;
+      --neo-white: #FFFFFF;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-paper);
+      background-image: radial-gradient(#0B0F19 1px, transparent 1px);
+      background-size: 18px 18px;
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+    }
+    /* Lock desktop (1024px+ / 1920x1200) to zero outer scroll */
+    @media (min-width: 1024px) {
+      html, body {
+        height: 100vh;
+        max-height: 100vh;
+        overflow: hidden;
+      }
+    }
+    .font-display {
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .neo-box {
+      background-color: var(--neo-white);
+      border: 3px solid var(--ink);
+      box-shadow: 5px 5px 0px var(--ink);
+    }
+    .neo-box-sm {
+      border: 2.5px solid var(--ink);
+      box-shadow: 3px 3px 0px var(--ink);
+    }
+    .neo-btn {
+      border: 2.5px solid var(--ink);
+      box-shadow: 3px 3px 0px var(--ink);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .neo-btn:hover {
+      transform: translate(-1.5px, -1.5px);
+      box-shadow: 4.5px 4.5px 0px var(--ink);
+    }
+    .neo-btn:active {
+      transform: translate(1.5px, 1.5px);
+      box-shadow: 1.5px 1.5px 0px var(--ink);
+    }
+    .neo-badge {
+      border: 2px solid var(--ink);
+      box-shadow: 2px 2px 0px var(--ink);
+    }
+    .pulse-dot {
+      animation: pulseBrutal 1.5s infinite;
+    }
+    @keyframes pulseBrutal {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(1.2); }
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #E5E0D8;
+      border-left: 2px solid #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #0B0F19;
+    }
+  </style>
+</head>
+<body class="min-h-screen lg:h-screen flex flex-col justify-between selection:bg-[#FFE600] selection:text-black">
+
+  <!-- 1. TOP JUDGE ORIENTATION STRIP (Instant 5-Second Context) -->
+  <div class="bg-[#0B0F19] text-white border-b-[3px] border-black py-1.5 px-4 text-[11px] font-mono-code font-bold flex flex-wrap items-center justify-between gap-2 shrink-0">
+    <div class="flex items-center gap-2">
+      <span class="px-2 py-0.5 bg-[#FFE600] text-black font-extrabold uppercase">JUDGE QUICK-START</span>
+      <span>1. Pick a Phishing Target &rarr; 2. Click "Launch Counter-Deception" &rarr; 3. Watch TinyFish Interrogate, Poison &amp; Neutralize</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-[#A3E635]">&bull; ZERO API KEY NEEDED (SANDBOX SIMULATION)</span>
+      <span class="bg-[#FF5C8D] text-black px-2 py-0.5 font-extrabold">TEAM JANAKI</span>
+    </div>
+  </div>
+
+  <!-- 2. COMPACT BRAND HEADER & TARGET CONTROLS -->
+  <header class="bg-white border-b-[3px] border-black shrink-0">
+    <div class="max-w-[1880px] mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <!-- Brand Identity -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-10 h-10 bg-[#FFE600] neo-box-sm flex items-center justify-center font-display font-black text-xl text-black">
+          M
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-display font-black text-xl tracking-tight text-black uppercase leading-none">PROJECT MAYA</h1>
+            <span class="neo-badge bg-[#22D3EE] text-black text-[10px] font-mono-code font-extrabold px-2 py-0.5 uppercase">
+              POWERED BY TINYFISH
+            </span>
+          </div>
+          <p class="text-[11px] font-bold text-neutral-700 mt-0.5">
+            Autonomous Counter-Deception &amp; Phishing Neutralization Engine // Fighting Illusion with Illusion
+          </p>
+        </div>
+      </div>
+
+      <!-- Target Selector & Action Buttons -->
+      <div class="flex flex-wrap items-center gap-2 flex-1 max-w-4xl justify-end">
+        <select id="presetSelect" aria-label="Select sample phishing target"
+          class="bg-[#F4F0EA] neo-box-sm text-xs font-mono-code font-bold text-black px-2.5 py-1.5 focus:outline-none cursor-pointer">
+          <option value="https://auth-chase-verify-portal.com/login">TARGET 1: Chase Multi-Step JS Kit (Login &rarr; OTP &rarr; Card)</option>
+          <option value="https://microsoft365-sso-turnstile.net/auth">TARGET 2: M365 Evilginx + Cloudflare Turnstile Gate</option>
+          <option value="https://hdfc-netbanking-kyc-update.org/verify">TARGET 3: Banking KYC Harvester + Telegram Bot Exfil</option>
+        </select>
+
+        <div class="relative flex-1 min-w-[220px]">
+          <input id="targetUrlInput" type="text" value="https://auth-chase-verify-portal.com/login"
+            aria-label="Suspect phishing URL"
+            class="w-full bg-white neo-box-sm pl-2.5 pr-28 py-1.5 text-xs font-mono-code font-bold text-black focus:outline-none" />
+          <span id="httpStatusBadge" class="absolute right-1.5 top-1 text-[10px] font-mono-code font-extrabold px-1.5 py-0.5 border-2 border-black bg-[#FF5C8D] text-black">
+            HTTP 200 LIVE
+          </span>
+        </div>
+
+        <button id="launchBtn" type="button"
+          class="neo-btn bg-[#FFE600] hover:bg-[#ffed4a] text-black font-display font-extrabold text-xs px-3.5 py-1.5 uppercase tracking-wide flex items-center gap-1.5">
+          <span>&#9654;</span>
+          <span id="launchBtnText">Launch Counter-Deception</span>
+        </button>
+
+        <button id="poisonBurstBtn" type="button"
+          class="neo-btn bg-[#A3E635] hover:bg-[#bef264] text-black font-display font-extrabold text-xs px-3 py-1.5 uppercase">
+          +5 Canary Burst
+        </button>
+
+        <button id="resetBtn" type="button"
+          class="neo-btn bg-white hover:bg-neutral-100 text-black font-mono-code font-bold text-xs px-2.5 py-1.5 uppercase">
+          Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. 4-PILLAR PIPELINE RIBBON & VIEW SWITCHER -->
+    <div class="bg-[#F4F0EA] border-t-[3px] border-black px-4 py-1.5">
+      <div class="max-w-[1880px] mx-auto flex flex-wrap items-center justify-between gap-2">
+        <!-- 4 Stages Mapped to TinyFish APIs -->
+        <div class="flex flex-wrap items-center gap-1.5 text-[11px] font-mono-code font-bold">
+          <div id="stage1Badge" class="neo-badge bg-[#FFE600] text-black px-2.5 py-0.5 flex items-center gap-1.5">
+            <span class="w-2 h-2 bg-black inline-block"></span>
+            <span>01 INTERROGATE</span>
+            <span class="text-[10px] bg-white border border-black px-1">TinyFish Fetch</span>
+          </div>
+          <span class="font-black">&rarr;</span>
+          <div id="stage2Badge" class="neo-badge bg-white text-black px-2.5 py-0.5 flex items-center gap-1.5">
+            <span class="w-2 h-2 bg-black inline-block"></span>
+            <span>02 POISON DB</span>
+            <span class="text-[10px] bg-white border border-black px-1">Agent /run-sse</span>
+          </div>
+          <span class="font-black">&rarr;</span>
+          <div id="stage3Badge" class="neo-badge bg-white text-black px-2.5 py-0.5 flex items-center gap-1.5">
+            <span class="w-2 h-2 bg-black inline-block"></span>
+            <span>03 TRACE EXFIL</span>
+            <span class="text-[10px] bg-white border border-black px-1">Structured JSON</span>
+          </div>
+          <span class="font-black">&rarr;</span>
+          <div id="stage4Badge" class="neo-badge bg-white text-black px-2.5 py-0.5 flex items-center gap-1.5">
+            <span class="w-2 h-2 bg-black inline-block"></span>
+            <span>04 NEUTRALIZE</span>
+            <span class="text-[10px] bg-white border border-black px-1">Browser + /monitors</span>
+          </div>
+        </div>
+
+        <!-- Live Telemetry Counters & View Tabs -->
+        <div class="flex flex-wrap items-center gap-2 text-[11px] font-mono-code font-bold">
+          <div class="neo-badge bg-white px-2 py-0.5">
+            TIME: <span id="elapsedTimer" class="font-extrabold underline">00.0s</span>
+          </div>
+          <div class="neo-badge bg-[#A3E635] px-2 py-0.5">
+            CANARIES INJECTED: <span id="canaryCounter" class="font-extrabold">0</span>
+          </div>
+          <div class="neo-badge bg-[#22D3EE] px-2 py-0.5">
+            WATCHDOG: <span id="monitorStateLabel" class="font-extrabold">STANDBY</span>
+          </div>
+
+          <div class="flex items-center gap-1.5 ml-1">
+            <button id="tabSocBtn" type="button" class="neo-badge bg-black text-[#FFE600] px-2.5 py-0.5 font-extrabold uppercase">
+              1. Live 3-Pane SOC
+            </button>
+            <button id="tabCodeBtn" type="button" class="neo-badge bg-white text-black px-2.5 py-0.5 font-extrabold uppercase">
+              2. Architecture &amp; Code
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 4. VIEW 1: 3-PANE NEO-BRUTALIST SOC WORKSPACE (FITS 1920x1200 WITH ZERO PAGE SCROLL) -->
+  <main id="socView" class="max-w-[1880px] w-full mx-auto px-4 py-3 flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-4 overflow-hidden">
+
+    <!-- LEFT PANE (4 cols): Thread A & B — TinyFish SSE Telemetry & OSINT -->
+    <section class="lg:col-span-4 neo-box flex flex-col justify-between min-h-0 overflow-hidden">
+      <!-- Header Banner -->
+      <div class="bg-[#22D3EE] border-b-[3px] border-black px-3.5 py-2.5 flex items-center justify-between shrink-0">
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-mono-code font-extrabold uppercase bg-black text-white px-1.5 py-0.5">
+              STEP 1 &amp; 3 // THREAD A + B
+            </span>
+            <span class="text-[10px] font-mono-code font-bold text-black">OSINT + EXFIL TRACE</span>
+          </div>
+          <h2 class="font-display font-black text-base text-black mt-0.5 uppercase leading-tight">
+            TinyFish SSE Telemetry &amp; Evidence
+          </h2>
+        </div>
+        <span id="sseStatusPill" class="neo-badge bg-white text-black text-[10px] font-mono-code font-extrabold px-2 py-0.5">
+          /v1/fetch + /run-sse
+        </span>
+      </div>
+
+      <!-- Judge-Friendly Explanation Strip -->
+      <div class="bg-[#F4F0EA] border-b-2 border-black px-3.5 py-1.5 text-[11px] font-semibold text-neutral-800 shrink-0">
+        <strong class="font-extrabold text-black">What's Happening:</strong> FastAPI (`asyncio.gather`) pulls RDAP/SSL OSINT via <strong>TinyFish Fetch</strong> while streaming live DOM events &amp; hidden exfiltration URLs in JSON.
+      </div>
+
+      <!-- Body Content (Flex-1 with clean internal scroll) -->
+      <div class="p-3 flex-1 min-h-0 flex flex-col gap-2.5 overflow-hidden">
+        <!-- Real-Time SSE Log -->
+        <div class="flex-1 min-h-0 flex flex-col">
+          <div class="flex items-center justify-between text-[11px] font-mono-code font-bold mb-1 shrink-0">
+            <span class="uppercase">1A. Concurrent Worker Stream (`asyncio.gather`)</span>
+            <button id="copyJsonBtn" type="button" class="neo-badge bg-[#FFE600] text-black px-2 py-0.5 text-[10px] font-extrabold hover:bg-yellow-300">
+              Copy Evidence JSON
+            </button>
+          </div>
+          <div id="sseLogContainer" class="bg-[#0B0F19] text-white border-[2.5px] border-black p-2.5 flex-1 min-h-0 overflow-y-auto font-mono-code text-[11px] space-y-1.5">
+          </div>
+        </div>
+
+        <!-- Structured JSON Evidence Output -->
+        <div class="flex-1 min-h-0 flex flex-col">
+          <div class="flex items-center justify-between text-[11px] font-mono-code font-bold mb-1 shrink-0">
+            <span class="uppercase">1B. Captured Exfiltration &amp; RDAP Telemetry (JSON)</span>
+            <span id="copyToast" class="bg-[#A3E635] border border-black px-1.5 py-0.5 text-[10px] font-extrabold hidden">
+              COPIED!
+            </span>
+          </div>
+          <pre id="jsonEvidenceBox" class="bg-[#0B0F19] text-[#A3E635] border-[2.5px] border-black p-2.5 text-[11px] font-mono-code flex-1 min-h-0 overflow-auto leading-snug"></pre>
+        </div>
+      </div>
+
+      <!-- Pane Footer -->
+      <div class="bg-[#F4F0EA] border-t-[3px] border-black px-3.5 py-2 flex items-center justify-between text-[11px] font-mono-code font-bold shrink-0">
+        <span>TINYFISH SEARCH &amp; FETCH: <strong class="bg-[#A3E635] px-1.5 py-0.5 border border-black">RDAP + SSL OK</strong></span>
+        <span>0ms STATIC BLOCK</span>
+      </div>
+    </section>
+
+    <!-- CENTER PANE (4 cols): Live TinyFish Headless Browser Sandbox -->
+    <section class="lg:col-span-4 neo-box flex flex-col justify-between min-h-0 overflow-hidden">
+      <!-- Header Banner -->
+      <div class="bg-[#FFE600] border-b-[3px] border-black px-3.5 py-2.5 flex items-center justify-between shrink-0">
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-mono-code font-extrabold uppercase bg-black text-[#FFE600] px-1.5 py-0.5">
+              STEP 2 // LIVE SANDBOX
+            </span>
+            <span class="text-[10px] font-mono-code font-bold text-black">TURNSTILE + JS BYPASS</span>
+          </div>
+          <h2 class="font-display font-black text-base text-black mt-0.5 uppercase leading-tight">
+            TinyFish Live Browser Preview
+          </h2>
+        </div>
+        <div class="neo-badge bg-white text-black px-2 py-0.5 flex items-center gap-1.5 text-[11px] font-mono-code font-extrabold">
+          <span class="w-2 h-2 rounded-full bg-[#16A34A] pulse-dot border border-black"></span>
+          <span id="browserStepBadge">STEP 1/4: JS GATE</span>
+        </div>
+      </div>
+
+      <!-- Judge-Friendly Explanation Strip -->
+      <div class="bg-[#F4F0EA] border-b-2 border-black px-3.5 py-1.5 text-[11px] font-semibold text-neutral-800 shrink-0">
+        <strong class="font-extrabold text-black">Why TinyFish Agent:</strong> 85% of phishing kits block `curl`/Python with Cloudflare Turnstiles. <strong>TinyFish Agent (`/run-sse`)</strong> navigates the real DOM &amp; injects fake data.
+      </div>
+
+      <!-- Body Content -->
+      <div class="p-3 flex-1 min-h-0 flex flex-col justify-between gap-2.5 overflow-y-auto">
+        <!-- Brutalist Headless Browser Window -->
+        <div class="border-[2.5px] border-black bg-white shadow-[3px_3px_0px_#0B0F19] flex-1 flex flex-col justify-between">
+          <!-- Browser Chrome Bar -->
+          <div class="bg-[#0B0F19] text-white px-2.5 py-1.5 border-b-[2.5px] border-black flex items-center gap-1.5 shrink-0">
+            <span class="w-2.5 h-2.5 bg-[#FF5C8D] border border-white inline-block"></span>
+            <span class="w-2.5 h-2.5 bg-[#FFE600] border border-white inline-block"></span>
+            <span class="w-2.5 h-2.5 bg-[#A3E635] border border-white inline-block"></span>
+            <div id="browserAddressBar" class="ml-1.5 flex-1 bg-white text-black border border-black px-2 py-0.5 text-[11px] font-mono-code font-bold truncate">
+              https://auth-chase-verify-portal.com/login
+            </div>
+          </div>
+
+          <!-- Active Phishing Kit DOM Viewport -->
+          <div class="p-3 bg-[#F4F0EA] flex-1 flex flex-col justify-between gap-2">
+            <div class="flex items-center justify-between gap-2">
+              <span id="agentActionBanner" class="neo-badge bg-[#22D3EE] text-black text-[10px] font-mono-code font-extrabold px-2 py-0.5 truncate">
+                Agent: Solving Cloudflare Turnstile...
+              </span>
+              <span id="domNodeCounter" class="text-[10px] font-mono-code font-bold bg-white border border-black px-1.5 py-0.5 shrink-0">
+                DOM Nodes: 142
+              </span>
+            </div>
+
+            <!-- Simulated Phishing Form Inside Preview -->
+            <div id="phishingDomContainer" class="bg-white border-[2.5px] border-black p-2.5 space-y-2">
+              <div class="flex items-center justify-between border-b-2 border-black pb-1.5">
+                <span id="phishPortalTitle" class="text-xs font-display font-black uppercase text-black truncate">
+                  Chase Commercial Security Verification
+                </span>
+                <span class="text-[9px] font-mono-code font-extrabold px-1.5 py-0.5 bg-[#FF5C8D] text-black border border-black shrink-0">
+                  LIVE PHISH KIT
+                </span>
+              </div>
+
+              <div>
+                <label class="block text-[10px] uppercase font-mono-code font-extrabold text-neutral-700 mb-0.5">
+                  Injected Synthetic Canary Username
+                </label>
+                <div id="previewUserField" class="bg-[#FFE600]/40 border-2 border-black px-2 py-1 text-xs font-mono-code font-bold text-black truncate">
+                  sec.ops.9f8a21c4@enterprise-auth-canary.org
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-[10px] uppercase font-mono-code font-extrabold text-neutral-700 mb-0.5">
+                    Canary Password
+                  </label>
+                  <div id="previewPassField" class="bg-[#A3E635]/40 border-2 border-black px-2 py-1 text-xs font-mono-code font-bold text-black truncate">
+                    Tf!99f8a21c4#2026
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[10px] uppercase font-mono-code font-extrabold text-neutral-700 mb-0.5">
+                    Synthetic MFA OTP
+                  </label>
+                  <div id="previewOtpField" class="bg-[#22D3EE]/40 border-2 border-black px-2 py-1 text-xs font-mono-code font-bold text-black truncate">
+                    482910 (Injected)
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-1 border-t-2 border-dashed border-black flex items-center justify-between text-[10px] font-mono-code font-bold">
+                <span>REVERSED EXFIL POST:</span>
+                <span id="interceptedPostUrl" class="bg-[#FF5C8D]/30 px-1.5 py-0.5 border border-black text-black font-extrabold truncate max-w-[215px]">
+                  https://185.220.101.44/api/v2/harvest.php
+                </span>
+              </div>
+            </div>
+
+            <!-- Interactive Step Controls -->
+            <div class="grid grid-cols-2 gap-2">
+              <button id="stepDomBtn" type="button"
+                class="neo-btn bg-white hover:bg-neutral-100 text-black font-display font-extrabold text-xs py-1.5 px-2.5 uppercase">
+                Step DOM Funnel
+              </button>
+              <button id="fileAbuseBtn" type="button"
+                class="neo-btn bg-[#22D3EE] hover:bg-cyan-300 text-black font-display font-extrabold text-xs py-1.5 px-2.5 uppercase">
+                Auto-Fill Abuse Portal
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TinyFish Browser API Abuse Takedown Status Card -->
+        <div class="bg-[#F4F0EA] border-[2.5px] border-black p-2.5 shadow-[3px_3px_0px_#0B0F19] shrink-0">
+          <div class="flex items-center justify-between text-xs mb-0.5">
+            <span class="font-display font-black uppercase">TinyFish Browser API // Registrar Takedown</span>
+            <span id="abuseFormBadge" class="neo-badge bg-[#A3E635] text-black text-[10px] font-mono-code font-extrabold px-1.5 py-0.5">
+              READY TO DISPATCH
+            </span>
+          </div>
+          <p id="abusePortalDetail" class="text-[11px] font-mono-code font-bold text-neutral-800 truncate">
+            Registrar: NameCheap Abuse Portal (abuse@namecheap.com) &bull; DOM Evidence Attached
+          </p>
+        </div>
+      </div>
+
+      <!-- Pane Footer -->
+      <div class="bg-[#F4F0EA] border-t-[3px] border-black px-3.5 py-2 flex items-center justify-between text-[11px] font-mono-code font-bold shrink-0">
+        <span>JS TURNSTILE GATE: <strong class="bg-[#A3E635] px-1.5 py-0.5 border border-black">BYPASSED</strong></span>
+        <span>HEADLESS STEALTH</span>
+      </div>
+    </section>
+
+    <!-- RIGHT PANE (4 cols): Attacker DB Poisoning & Monitor Watchdog -->
+    <section class="lg:col-span-4 neo-box flex flex-col justify-between min-h-0 overflow-hidden">
+      <!-- Header Banner -->
+      <div class="bg-[#A3E635] border-b-[3px] border-black px-3.5 py-2.5 flex items-center justify-between shrink-0">
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-mono-code font-extrabold uppercase bg-black text-[#A3E635] px-1.5 py-0.5">
+              STEP 2 &amp; 4 // THREAD B + C
+            </span>
+            <span class="text-[10px] font-mono-code font-bold text-black">POISON + WATCHDOG</span>
+          </div>
+          <h2 class="font-display font-black text-base text-black mt-0.5 uppercase leading-tight">
+            DB Poisoning &amp; Cron Watchdog
+          </h2>
+        </div>
+        <span class="neo-badge bg-white text-black text-[10px] font-mono-code font-extrabold px-2 py-0.5">
+          /v1/monitors
+        </span>
+      </div>
+
+      <!-- Judge-Friendly Explanation Strip -->
+      <div class="bg-[#F4F0EA] border-b-2 border-black px-3.5 py-1.5 text-[11px] font-semibold text-neutral-800 shrink-0">
+        <strong class="font-extrabold text-black">Active Neutralization:</strong> Floods the scammer's backend with trackable honey-tokens and arms <strong>TinyFish Monitor (`/v1/monitors`)</strong> until `HTTP 404`.
+      </div>
+
+      <!-- Body Content -->
+      <div class="p-3 flex-1 min-h-0 flex flex-col justify-between gap-2.5 overflow-hidden">
+        <!-- Attacker DB Corruption Meter -->
+        <div class="bg-[#F4F0EA] border-[2.5px] border-black p-2.5 shadow-[3px_3px_0px_#0B0F19] shrink-0">
+          <div class="flex items-center justify-between text-[11px] font-mono-code font-extrabold mb-1">
+            <span class="uppercase">Scammer DB Signal-to-Noise Corruption</span>
+            <span id="dbCorruptionPct" class="bg-[#FFE600] border border-black px-1.5 py-0.5">94% POISONED</span>
+          </div>
+          <div class="w-full h-3.5 bg-white border-2 border-black overflow-hidden">
+            <div id="dbCorruptionBar" class="h-full bg-[#FF5C8D] border-r-2 border-black transition-all duration-300" style="width: 94%;"></div>
+          </div>
+          <p class="text-[10px] font-semibold text-neutral-800 mt-1">
+            Canary credentials fire a SOC webhook alert the moment scammers test stolen dumps.
+          </p>
+        </div>
+
+        <!-- Injected Canary Honey-Tokens Table (Flex-1 internal scroll) -->
+        <div class="flex-1 min-h-0 flex flex-col">
+          <div class="flex items-center justify-between text-[11px] font-mono-code font-bold mb-1 shrink-0">
+            <span class="uppercase">Injected Synthetic Canary Honey-Tokens</span>
+            <span class="bg-[#FFE600] border border-black px-1.5 py-0.5 text-[10px] font-extrabold">LIVE EXFIL FEED</span>
+          </div>
+          <div class="border-[2.5px] border-black bg-white flex-1 min-h-0 overflow-y-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="sticky top-0 z-10">
+                <tr class="border-b-[2.5px] border-black text-[10px] font-mono-code font-extrabold bg-[#FFE600] text-black">
+                  <th class="py-1 px-2 border-r-2 border-black">CANARY ID</th>
+                  <th class="py-1 px-2 border-r-2 border-black">SYNTHETIC CREDENTIAL</th>
+                  <th class="py-1 px-2 text-right">STATE</th>
+                </tr>
+              </thead>
+              <tbody id="canaryTableBody" class="divide-y-2 divide-black text-[11px] font-mono-code font-bold">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TinyFish Monitor API (/v1/monitors) LLM Diff Judge Card -->
+        <div class="bg-[#F4F0EA] border-[2.5px] border-black p-2.5 shadow-[3px_3px_0px_#0B0F19] shrink-0">
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <span class="text-xs font-display font-black uppercase text-black">
+              TinyFish Monitor API (`0 * * * *`)
+            </span>
+            <button id="simulate404Btn" type="button"
+              class="neo-btn bg-[#FF5C8D] hover:bg-pink-400 text-black text-[10px] font-mono-code font-extrabold px-2 py-1 uppercase">
+              Simulate HTTP 404 Takedown
+            </button>
+          </div>
+          <p id="llmJudgeOutput" class="text-[11px] font-mono-code font-bold text-black bg-white border-2 border-black p-1.5 leading-snug">
+            LLM Diff Judge: Watching target DOM every 60m. Status: Active Credential Harvester (Awaiting Registrar Suspension).
+          </p>
+        </div>
+      </div>
+
+      <!-- Pane Footer -->
+      <div class="bg-[#F4F0EA] border-t-[3px] border-black px-3.5 py-2 flex items-center justify-between text-[11px] font-mono-code font-bold shrink-0">
+        <span>SOC RESPONSE TIME: <strong class="bg-[#FFE600] px-1.5 py-0.5 border border-black">45m &rarr; 18s</strong></span>
+        <span>TEAM JANAKI</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 5. VIEW 2: ARCHITECTURE & CODEBASE INSPECTOR (ALSO ZERO-SCROLL ON 1920x1200) -->
+  <section id="codeView" class="max-w-[1880px] w-full mx-auto px-4 py-3 flex-1 min-h-0 hidden overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 h-full min-h-0">
+      <!-- 4 TinyFish Primitives Mapping Cards -->
+      <div class="lg:col-span-5 flex flex-col justify-between gap-2.5 min-h-0 overflow-y-auto pr-1">
+        <div class="neo-box p-3 bg-[#FFE600]">
+          <span class="text-[10px] font-mono-code font-extrabold bg-black text-white px-2 py-0.5 uppercase">
+            ROUND 1 ARCHITECTURE BLUEPRINT
+          </span>
+          <h2 class="font-display font-black text-xl text-black mt-1 uppercase">
+            How TinyFish Powers Project MAYA
+          </h2>
+          <p class="text-xs font-bold text-black mt-0.5">
+            Static Python scrapers (`requests`/`BeautifulSoup`) get blocked by Cloudflare Turnstiles and multi-step JS login flows. MAYA orchestrates all 4 TinyFish primitives concurrently via `asyncio.gather`:
+          </p>
+        </div>
+
+        <div class="neo-box p-3 bg-white">
+          <div class="flex items-center justify-between">
+            <span class="font-display font-black text-xs uppercase bg-[#22D3EE] border-2 border-black px-2 py-0.5">
+              1. TinyFish Search &amp; Fetch APIs
+            </span>
+            <span class="font-mono-code text-[11px] font-bold">Thread A // OSINT</span>
+          </div>
+          <p class="text-xs font-medium text-neutral-800 mt-1.5">
+            Performs zero-latency OSINT discovery and pulls clean Markdown telemetry from RDAP/Whois registries, DNS records, and SSL certificate logs to identify registrar abuse contacts.
+          </p>
+        </div>
+
+        <div class="neo-box p-3 bg-white">
+          <div class="flex items-center justify-between">
+            <span class="font-display font-black text-xs uppercase bg-[#A3E635] border-2 border-black px-2 py-0.5">
+              2. TinyFish Agent API (/v1/automation/run-sse)
+            </span>
+            <span class="font-mono-code text-[11px] font-bold">Thread B // DOM Agent</span>
+          </div>
+          <p class="text-xs font-medium text-neutral-800 mt-1.5">
+            Spawns a stateful headless browser with Live Browser Preview to navigate multi-step fake login flows, inject synthetic canary credentials, and capture hidden POST exfiltration endpoints in structured JSON.
+          </p>
+        </div>
+
+        <div class="neo-box p-3 bg-white">
+          <div class="flex items-center justify-between">
+            <span class="font-display font-black text-xs uppercase bg-[#FFE600] border-2 border-black px-2 py-0.5">
+              3. TinyFish Browser API
+            </span>
+            <span class="font-mono-code text-[11px] font-bold">Thread B // Takedown</span>
+          </div>
+          <p class="text-xs font-medium text-neutral-800 mt-1.5">
+            Launches a parallel browser session on the hosting provider's abuse portal to auto-populate and submit the formal takedown report with captured DOM evidence.
+          </p>
+        </div>
+
+        <div class="neo-box p-3 bg-white">
+          <div class="flex items-center justify-between">
+            <span class="font-display font-black text-xs uppercase bg-[#FF5C8D] border-2 border-black px-2 py-0.5">
+              4. TinyFish Monitor API (/v1/monitors)
+            </span>
+            <span class="font-mono-code text-[11px] font-bold">Thread C // Watchdog</span>
+          </div>
+          <p class="text-xs font-medium text-neutral-800 mt-1.5">
+            Schedules an automated hourly cron watchdog with an LLM diff judge to alert the SOC dashboard the exact moment the registrar suspends the malicious domain (`HTTP 404`).
+          </p>
+        </div>
+      </div>
+
+      <!-- Backend Codebase Preview (`maya_engine.py`) -->
+      <div class="lg:col-span-7 neo-box flex flex-col justify-between bg-white min-h-0 overflow-hidden">
+        <div class="bg-[#0B0F19] text-white border-b-[3px] border-black px-4 py-2.5 flex items-center justify-between shrink-0">
+          <div>
+            <span class="text-[10px] font-mono-code font-bold text-[#FFE600] uppercase">
+              BACKEND ORCHESTRATOR CODEBASE // MAYA_ENGINE.PY
+            </span>
+            <h3 class="font-display font-black text-base text-white">
+              FastAPI + TinyFish `asyncio.gather` Pipeline (No API Key Needed for Demo)
+            </h3>
+          </div>
+          <button id="backToSocBtn" type="button" class="neo-badge bg-[#FFE600] text-black text-xs font-mono-code font-extrabold px-3 py-1 uppercase">
+            &larr; Back to Live SOC
+          </button>
+        </div>
+
+        <pre class="bg-[#0B0F19] text-[#A3E635] p-4 font-mono-code text-xs overflow-auto flex-1 min-h-0 leading-relaxed">
+@app.post("/api/v1/neutralize")
+async def neutralize_phishing_target(req: NeutralizeRequest):
+    """
+    Executes the concurrent 3-thread TinyFish counter-deception pipeline.
+    Automatically falls back to deterministic simulation in Round 1 demo mode.
+    """
+    canaries = [generate_canary_token() for _ in range(req.canary_batch_size)]
+
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        osint_res, agent_res, monitor_res = await asyncio.gather(
+            # Thread A: TinyFish Search & Fetch APIs (RDAP/Whois + SSL Markdown)
+            thread_a_fetch_osint(client, req.suspect_url),
+
+            # Thread B: TinyFish Agent (/v1/automation/run-sse) + Browser API
+            thread_b_agent_and_browser(client, req.suspect_url, canaries),
+
+            # Thread C: TinyFish Monitor API (/v1/monitors) Hourly LLM Watchdog
+            thread_c_monitor_watchdog(client, req.suspect_url),
+        )
+
+    return {
+        "status": "NEUTRALIZATION_PIPELINE_COMPLETE",
+        "target_url": req.suspect_url,
+        "canaries_injected": canaries,
+        "thread_a_osint": osint_res,
+        "thread_b_agent_browser": agent_res,
+        "thread_c_monitor": monitor_res,
+    }</pre>
+
+        <div class="bg-[#F4F0EA] border-t-[3px] border-black px-4 py-2 flex flex-wrap items-center justify-between text-xs font-mono-code font-bold shrink-0">
+          <span>SQUAD: Maumita Saha (Lead) &bull; Aadithya S Nair &bull; Sufiyan Khan</span>
+          <span class="bg-[#A3E635] border border-black px-2 py-0.5">ROUND 1 SHORTLIST PROTOTYPE</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. COMPACT FOOTER -->
+  <footer class="bg-white border-t-[3px] border-black shrink-0">
+    <div class="max-w-[1880px] w-full mx-auto px-4 py-2 text-[11px] font-mono-code font-bold flex flex-wrap items-center justify-between gap-2">
+      <div>
+        <span class="bg-black text-[#FFE600] px-2 py-0.5 font-extrabold">PROJECT MAYA</span>
+        <span class="ml-2">Built for Swim with TinyFish by Team Janaki (Maumita Saha &bull; Aadithya S Nair &bull; Sufiyan Khan)</span>
+      </div>
+      <div>
+        TINYFISH PRIMITIVES: Search &amp; Fetch | Agent (/v1/automation/run-sse) | Browser | Monitor (/v1/monitors)
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const TARGET_PROFILES = {
+      "https://auth-chase-verify-portal.com/login": {
+        title: "Chase Commercial Security Verification",
+        exfil: "https://185.220.101.44/api/v2/harvest.php",
+        registrar: "NameCheap Abuse Portal (abuse@namecheap.com)",
+        asn: "AS20473 (Choopa / Vultr Bulletproof Host)",
+        kit: "Kraken-JS-Turnstile-v4.2",
+        redirectChain: [
+          "https://auth-chase-verify-portal.com/login",
+          "https://auth-chase-verify-portal.com/mfa-otp",
+          "https://185.220.101.44/api/v2/harvest.php"
+        ]
+      },
+      "https://microsoft365-sso-turnstile.net/auth": {
+        title: "Microsoft Entra ID Single Sign-On",
+        exfil: "https://91.215.85.19/collect/session-cookie",
+        registrar: "Cloudflare Registrar & Tucows Abuse Desk",
+        asn: "AS49981 (WorldStream NL)",
+        kit: "Evilginx3-Turnstile-ReverseProxy",
+        redirectChain: [
+          "https://microsoft365-sso-turnstile.net/auth",
+          "https://microsoft365-sso-turnstile.net/device-token",
+          "https://91.215.85.19/collect/session-cookie"
+        ]
+      },
+      "https://hdfc-netbanking-kyc-update.org/verify": {
+        title: "HDFC NetBanking Mandatory PAN/KYC Portal",
+        exfil: "https://api.telegram.org/bot681920:AAH/sendMessage",
+        registrar: "PublicDomainRegistry (abuse@publicdomainregistry.com)",
+        asn: "AS14061 (DigitalOcean Droplet)",
+        kit: "PhishKit-Telegram-Exfil-v2",
+        redirectChain: [
+          "https://hdfc-netbanking-kyc-update.org/verify",
+          "https://hdfc-netbanking-kyc-update.org/otp-gate",
+          "https://api.telegram.org/bot681920:AAH/sendMessage"
+        ]
+      }
+    };
+
+    let canaryList = [];
+    let domStepIndex = 0;
+    let timerInterval = null;
+    let elapsedDeci = 0;
+
+    const presetSelect = document.getElementById("presetSelect");
+    const targetUrlInput = document.getElementById("targetUrlInput");
+    const launchBtn = document.getElementById("launchBtn");
+    const launchBtnText = document.getElementById("launchBtnText");
+    const poisonBurstBtn = document.getElementById("poisonBurstBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const copyJsonBtn = document.getElementById("copyJsonBtn");
+    const copyToast = document.getElementById("copyToast");
+    const stepDomBtn = document.getElementById("stepDomBtn");
+    const fileAbuseBtn = document.getElementById("fileAbuseBtn");
+    const simulate404Btn = document.getElementById("simulate404Btn");
+
+    const tabSocBtn = document.getElementById("tabSocBtn");
+    const tabCodeBtn = document.getElementById("tabCodeBtn");
+    const backToSocBtn = document.getElementById("backToSocBtn");
+    const socView = document.getElementById("socView");
+    const codeView = document.getElementById("codeView");
+
+    const sseLogContainer = document.getElementById("sseLogContainer");
+    const jsonEvidenceBox = document.getElementById("jsonEvidenceBox");
+    const canaryTableBody = document.getElementById("canaryTableBody");
+    const canaryCounter = document.getElementById("canaryCounter");
+    const elapsedTimer = document.getElementById("elapsedTimer");
+    const monitorStateLabel = document.getElementById("monitorStateLabel");
+    const httpStatusBadge = document.getElementById("httpStatusBadge");
+    const browserAddressBar = document.getElementById("browserAddressBar");
+    const phishPortalTitle = document.getElementById("phishPortalTitle");
+    const interceptedPostUrl = document.getElementById("interceptedPostUrl");
+    const abusePortalDetail = document.getElementById("abusePortalDetail");
+    const abuseFormBadge = document.getElementById("abuseFormBadge");
+    const previewUserField = document.getElementById("previewUserField");
+    const previewPassField = document.getElementById("previewPassField");
+    const previewOtpField = document.getElementById("previewOtpField");
+    const agentActionBanner = document.getElementById("agentActionBanner");
+    const browserStepBadge = document.getElementById("browserStepBadge");
+    const dbCorruptionPct = document.getElementById("dbCorruptionPct");
+    const dbCorruptionBar = document.getElementById("dbCorruptionBar");
+    const llmJudgeOutput = document.getElementById("llmJudgeOutput");
+
+    function showSocTab() {
+      socView.classList.remove("hidden");
+      codeView.classList.add("hidden");
+      tabSocBtn.className = "neo-badge bg-black text-[#FFE600] px-2.5 py-0.5 font-extrabold uppercase";
+      tabCodeBtn.className = "neo-badge bg-white text-black px-2.5 py-0.5 font-extrabold uppercase";
+    }
+
+    function showCodeTab() {
+      socView.classList.add("hidden");
+      codeView.classList.remove("hidden");
+      tabCodeBtn.className = "neo-badge bg-black text-[#FFE600] px-2.5 py-0.5 font-extrabold uppercase";
+      tabSocBtn.className = "neo-badge bg-white text-black px-2.5 py-0.5 font-extrabold uppercase";
+    }
+
+    tabSocBtn.addEventListener("click", showSocTab);
+    tabCodeBtn.addEventListener("click", showCodeTab);
+    backToSocBtn.addEventListener("click", showSocTab);
+
+    function randomHex(len) {
+      const chars = "0123456789abcdef";
+      let out = "";
+      for (let i = 0; i < len; i++) {
+        out += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return out;
+    }
+
+    function getActiveProfile() {
+      const url = targetUrlInput.value.trim();
+      return TARGET_PROFILES[url] || {
+        title: "Suspicious Credential Harvester Portal",
+        exfil: "https://194.165.16.77/gate/exfil.php",
+        registrar: "Registrar Abuse Desk (RDAP Auto-Detected)",
+        asn: "AS60068 (CDN77 / Proxy Node)",
+        kit: "Generic-MultiStep-JS-Kit",
+        redirectChain: [url, url + "/verify-otp", "https://194.165.16.77/gate/exfil.php"]
+      };
+    }
+
+    function appendSseLog(tag, message, colorClass = "text-[#FFE600]") {
+      const now = new Date();
+      const ts = now.toTimeString().split(" ")[0] + "." + String(now.getMilliseconds()).padStart(3, "0");
+      const row = document.createElement("div");
+      row.className = "leading-snug border-l-4 border-[#FFE600] pl-2 py-0.5";
+      row.innerHTML = `<span class="text-neutral-400">[${ts}]</span> <span class="${colorClass} font-bold">${tag}</span> <span class="text-white">${message}</span>`;
+      sseLogContainer.appendChild(row);
+      sseLogContainer.scrollTop = sseLogContainer.scrollHeight;
+    }
+
+    function updateJsonEvidence(statusOverride) {
+      const url = targetUrlInput.value.trim();
+      const prof = getActiveProfile();
+      const evidence = {
+        engine: "MAYA // TinyFish Counter-Deception",
+        mode: "ROUND_1_SANDBOX_SIMULATION",
+        target_url: url,
+        domain_status: statusOverride || "ACTIVE_INTERROGATION",
+        tinyfish_fetch_osint: {
+          asn: prof.asn,
+          registrar_abuse: prof.registrar,
+          ssl_issuer: "Let's Encrypt R3 (Ephemeral 90d)"
+        },
+        tinyfish_agent_sse: {
+          kit_signature: prof.kit,
+          exfiltration_endpoint: prof.exfil,
+          redirect_chain: prof.redirectChain,
+          canaries_injected: canaryList.length
+        },
+        tinyfish_monitor: {
+          cron: "0 * * * *",
+          llm_diff_judge: statusOverride === "HTTP_404_SUSPENDED" ? "CONFIRMED_TAKEDOWN_404" : "WATCHING_DOM_HASH"
+        }
+      };
+      jsonEvidenceBox.textContent = JSON.stringify(evidence, null, 2);
+    }
+
+    function injectCanaryBatch(count) {
+      for (let i = 0; i < count; i++) {
+        const token = randomHex(8);
+        const item = {
+          id: `MAYA-${token.toUpperCase()}`,
+          email: `sec.ops.${token}@enterprise-canary.org`,
+          pass: `Tf!9${token}#26`,
+          otp: String(Math.floor(100000 + Math.random() * 900000)),
+          status: "200 EXFIL"
+        };
+        canaryList.unshift(item);
+      }
+      const latest = canaryList[0];
+      if (latest) {
+        previewUserField.textContent = latest.email;
+        previewPassField.textContent = latest.pass;
+        previewOtpField.textContent = `${latest.otp} (Injected)`;
+      }
+      canaryCounter.textContent = String(canaryList.length);
+      const pct = Math.min(99, 68 + canaryList.length * 3);
+      dbCorruptionPct.textContent = `${pct}% POISONED`;
+      dbCorruptionBar.style.width = `${pct}%`;
+
+      canaryTableBody.innerHTML = "";
+      canaryList.slice(0, 14).forEach((c) => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-[#FFE600]/20";
+        tr.innerHTML = `
+          <td class="py-1 px-2 border-r-2 border-black text-black font-extrabold">${c.id}</td>
+          <td class="py-1 px-2 border-r-2 border-black text-neutral-800 truncate max-w-[150px]">${c.email}</td>
+          <td class="py-1 px-2 text-right"><span class="bg-[#A3E635] border border-black px-1 py-0.5 text-[10px] font-extrabold">${c.status}</span></td>
+        `;
+        canaryTableBody.appendChild(tr);
+      });
+      updateJsonEvidence();
+    }
+
+    function highlightStage(stageNum) {
+      const stages = [
+        document.getElementById("stage1Badge"),
+        document.getElementById("stage2Badge"),
+        document.getElementById("stage3Badge"),
+        document.getElementById("stage4Badge")
+      ];
+      stages.forEach((el, idx) => {
+        if (idx < stageNum) {
+          el.className = "neo-badge bg-[#FFE600] text-black px-2.5 py-0.5 flex items-center gap-1.5";
+        } else {
+          el.className = "neo-badge bg-white text-black px-2.5 py-0.5 flex items-center gap-1.5";
+        }
+      });
+    }
+
+    function runCounterDeceptionPipeline() {
+      if (timerInterval) clearInterval(timerInterval);
+      elapsedDeci = 0;
+      sseLogContainer.innerHTML = "";
+      const prof = getActiveProfile();
+      const url = targetUrlInput.value.trim();
+
+      browserAddressBar.textContent = url;
+      phishPortalTitle.textContent = prof.title;
+      interceptedPostUrl.textContent = prof.exfil;
+      abusePortalDetail.textContent = `Registrar: ${prof.registrar} • DOM Evidence Attached`;
+      httpStatusBadge.textContent = "HTTP 200 LIVE";
+      httpStatusBadge.className = "absolute right-1.5 top-1 text-[10px] font-mono-code font-extrabold px-1.5 py-0.5 border-2 border-black bg-[#FF5C8D] text-black";
+      monitorStateLabel.textContent = "ARMING...";
+      launchBtnText.textContent = "Re-Run Pipeline";
+
+      timerInterval = setInterval(() => {
+        elapsedDeci += 1;
+        elapsedTimer.textContent = (elapsedDeci / 10).toFixed(1) + "s";
+        if (elapsedDeci >= 18) {
+          clearInterval(timerInterval);
+        }
+      }, 100);
+
+      highlightStage(1);
+      appendSseLog("[FastAPI]", `asyncio.gather() spawned Threads A, B, C for ${url}`, "text-[#22D3EE]");
+      appendSseLog("[Thread A // Fetch]", `RDAP/Whois & SSL markdown pulled (${prof.asn})`, "text-[#A3E635]");
+
+      setTimeout(() => {
+        highlightStage(2);
+        browserStepBadge.textContent = "STEP 2/4: LOGIN + OTP";
+        agentActionBanner.textContent = "Agent (/run-sse): Turnstile bypassed; injecting canaries...";
+        appendSseLog("[Thread B // Agent]", "Bypassed JS session gate; Live Browser Preview streaming", "text-[#FFE600]");
+        injectCanaryBatch(5);
+      }, 450);
+
+      setTimeout(() => {
+        highlightStage(3);
+        browserStepBadge.textContent = "STEP 3/4: EXFIL TRACED";
+        agentActionBanner.textContent = `Captured hidden POST endpoint -> ${prof.exfil}`;
+        appendSseLog("[Thread B // Trace]", `Reversed POST exfiltration pipeline: ${prof.exfil}`, "text-[#FF5C8D]");
+        updateJsonEvidence();
+      }, 1050);
+
+      setTimeout(() => {
+        highlightStage(4);
+        browserStepBadge.textContent = "STEP 4/4: ABUSE FILED";
+        abuseFormBadge.textContent = "DISPATCHED VIA BROWSER API";
+        monitorStateLabel.textContent = "ARMED (HOURLY)";
+        appendSseLog("[Thread B // Browser]", `Auto-populated registrar abuse form (${prof.registrar})`, "text-[#A3E635]");
+        appendSseLog("[Thread C // Monitor]", "Armed /v1/monitors cron watchdog with LLM diff judge", "text-[#22D3EE]");
+      }, 1650);
+    }
+
+    presetSelect.addEventListener("change", () => {
+      targetUrlInput.value = presetSelect.value;
+      runCounterDeceptionPipeline();
+    });
+
+    launchBtn.addEventListener("click", () => {
+      runCounterDeceptionPipeline();
+    });
+
+    poisonBurstBtn.addEventListener("click", () => {
+      injectCanaryBatch(5);
+      appendSseLog("[Thread B // Agent]", "Injected +5 synthetic canary honey-tokens into scammer DB", "text-[#A3E635]");
+    });
+
+    stepDomBtn.addEventListener("click", () => {
+      const steps = [
+        { badge: "STEP 1/4: TURNSTILE", banner: "Agent solving client-side JS challenge & session gate..." },
+        { badge: "STEP 2/4: CREDENTIALS", banner: "Submitting synthetic canary username & password..." },
+        { badge: "STEP 3/4: MFA OTP GATE", banner: "Injecting synthetic 6-digit OTP token (482910)..." },
+        { badge: "STEP 4/4: POST INTERCEPT", banner: "Capturing final redirect & POST exfiltration payload..." }
+      ];
+      domStepIndex = (domStepIndex + 1) % steps.length;
+      browserStepBadge.textContent = steps[domStepIndex].badge;
+      agentActionBanner.textContent = steps[domStepIndex].banner;
+      appendSseLog("[Live Preview]", steps[domStepIndex].banner, "text-[#FFE600]");
+    });
+
+    fileAbuseBtn.addEventListener("click", () => {
+      const prof = getActiveProfile();
+      abuseFormBadge.textContent = "TAKEDOWN SUBMITTED";
+      appendSseLog("[TinyFish Browser API]", `Submitted DOM evidence packet to ${prof.registrar}`, "text-[#A3E635]");
+    });
+
+    simulate404Btn.addEventListener("click", () => {
+      httpStatusBadge.textContent = "HTTP 404 SUSPENDED";
+      httpStatusBadge.className = "absolute right-1.5 top-1 text-[10px] font-mono-code font-extrabold px-1.5 py-0.5 border-2 border-black bg-[#A3E635] text-black";
+      monitorStateLabel.textContent = "NEUTRALIZED (404)";
+      llmJudgeOutput.textContent = "LLM Diff Judge Alert: Target domain returned HTTP 404 (Registrar Suspension Confirmed). Threat neutralized.";
+      appendSseLog("[Thread C // Monitor]", "LLM Diff Judge detected HTTP 404 suspension! Incident closed.", "text-[#A3E635]");
+      updateJsonEvidence("HTTP_404_SUSPENDED");
+    });
+
+    resetBtn.addEventListener("click", () => {
+      canaryList = [];
+      runCounterDeceptionPipeline();
+    });
+
+    copyJsonBtn.addEventListener("click", () => {
+      const text = jsonEvidenceBox.textContent;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text);
+        } else {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+        }
+        copyToast.classList.remove("hidden");
+        setTimeout(() => copyToast.classList.add("hidden"), 2000);
+      } catch (e) {
+        copyToast.classList.remove("hidden");
+      }
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+      runCounterDeceptionPipeline();
+    });
+  </script>
+</body>
+</html>
